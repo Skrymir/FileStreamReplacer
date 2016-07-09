@@ -3,17 +3,25 @@ package com.skrymir.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.CopyOption;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class FileStreamReplace {
 
 	public static void main(String[] args) {
 		try {
-			FileStreamReplace.removeDoubleQuotes(args[0]);
+			Path dir = Paths.get(args[0]);
+			for(Path file : FileStreamReplace.listFilesInDir(dir, "*.{txt,java}")) {
+				FileStreamReplace.removeDoubleQuotes(file.toString());
+			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -34,6 +42,19 @@ public class FileStreamReplace {
 		
 		Files.move(outputFilePath, outputFilePath.resolveSibling(inputFilePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
 	}
+	
+	public static List<Path> listFilesInDir(Path dir, String fileNamePattern) throws IOException {
+	       List<Path> pathList = new ArrayList<>();
+	       // Not really a stream in the Java 8 sense, for have to loop over it
+	       try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, fileNamePattern)) {
+	           for(Path entry: stream) {
+	        	   pathList.add(entry);
+	           }
+	       } catch(DirectoryIteratorException ex) {
+	           throw ex.getCause();
+	       }
+	       return pathList;
+	   }
 	
 	
 }
