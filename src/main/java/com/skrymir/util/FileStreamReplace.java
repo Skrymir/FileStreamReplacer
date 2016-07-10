@@ -35,7 +35,7 @@ public class FileStreamReplace {
 	 */
 	public static void removeDoubleQuotes(String fileName) throws IOException {
 		Path inputFilePath = Paths.get(fileName);
-		Path outputFilePath = Paths.get(fileName + "_fixed");
+		Path outputFilePath = Paths.get(fileName + "_fixxxed");
 		// try-with-resources -- let java close my stream and writer!
 		// files can be big, read line by line
 		try (Stream<String> inputStream = Files.lines(inputFilePath);
